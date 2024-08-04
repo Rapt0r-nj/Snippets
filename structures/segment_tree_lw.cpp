@@ -5,40 +5,46 @@ using namespace std;
 using ll = long long;
 using pii = pair<ll, ll>;
 
-const ll N=5e5+5, mod=998244353;
+const ll N=2e5+5, mod=998244353;
 
 using treenode = ll;
-using lazynode = pii;
+using lazynode = ll;
 #define fir(a) for(int i=0; i<a; i++)
 
 treenode treeidn = 0;
-lazynode lazyidn = {1, 0};
+lazynode lazyidn = 0;
 
 vector<ll> v(N);
 vector<treenode> tree(4*N, treeidn);
 vector<lazynode> lazy(4*N, lazyidn);
 
 treenode merge(treenode &a, treenode &b){
-  return (a+b)%mod;
+  return (a+b);
 }
-void lazyapply(treenode &to, ll l, ll r, lazynode &fr){
-  auto [a, b]=fr;
-  to=((to*(a%mod))%mod+((r-l+1)*b)%mod)%mod;
+void lazyapply(treenode &to, ll l, ll r, lazynode fr){
+  ll s=0;
+  fir(fr){
+    while(to){
+      s+=to%10;
+      to/=10;
+    }
+    to=s; s=0;
+  }
 }
-void lazymerge(lazynode &to, lazynode &fr){
-  auto [a, b]=fr;
-  to.first=((to.first%mod)*(a%mod))%mod;
-  to.second=((to.second*a)%mod+b)%mod;
+void lazymerge(lazynode &to, lazynode fr){
+  to=to+fr;
 }
 void build(ll id, ll l, ll r){
   if(l==r){
     tree[id]=v[l];
+    lazy[id]=lazyidn;
     return;
   }
   ll m=(l+r)/2;
   build(id*2+1, l, m);
   build(id*2+2, m+1, r);
   tree[id] = merge(tree[id*2+1], tree[id*2+2]);
+  lazy[id] = lazyidn;
 }
 void push(ll id, ll l, ll r){
   if(l-r){
@@ -86,12 +92,12 @@ void solve(){
 
   while(q--){
     ll t; cin>>t;
-    if(t){
-      ll l, r; cin>>l>>r;
-      cout<<query(0, 0, n-1, l, r-1)<<"\n";
+    if(t==2){
+      ll l, r; cin>>l;
+      cout<<query(0, 0, n-1, l-1, l-1)<<"\n";
     }else{
-      ll l, r, a, b; cin>>l>>r>>a>>b;
-      update(0, 0, n-1, l, r-1, {a, b});
+      ll l, r, a, b; cin>>l>>r;
+      update(0, 0, n-1, l-1, r-1, 1);
     }
   }
   return;
@@ -101,7 +107,7 @@ int main(){
   ios_base::sync_with_stdio(0);
   cin.tie(0); cout.tie(0);
 
-  int tt=1; //cin>>tt;
+  int tt=1; cin>>tt;
   while(tt--){
     solve();
   }
