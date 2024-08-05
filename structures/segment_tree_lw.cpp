@@ -1,3 +1,5 @@
+//#pragma GCC optimize("Ofast,unroll-loops")
+//#pragma GCC target("avx2,popcnt,lzcnt,abm,bmi,bmi2,fma,tune=native")
 
 #include <bits/stdc++.h>
 
@@ -23,6 +25,7 @@ treenode merge(treenode &a, treenode &b){
 }
 void lazyapply(treenode &to, ll l, ll r, lazynode fr){
   ll s=0;
+  fr=min(fr, 3LL);
   fir(fr){
     while(to){
       s+=to%10;
@@ -113,4 +116,3 @@ int main(){
   }
   return 0;
 }
-
